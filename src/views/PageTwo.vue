@@ -85,7 +85,7 @@ export default {
   name: 'PageTwo',
   setup() {
     const svgRef = ref(null)
-    const { message } = useWebSocket('ws://192.168.0.115:1880/ws/data')
+    const { message } = useWebSocket('ws://localhost:1880/ws/data')
     const imgWidth = 1920
     const imgHeight = 1080
 

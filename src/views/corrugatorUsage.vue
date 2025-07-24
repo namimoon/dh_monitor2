@@ -14,13 +14,13 @@
 				<div class="header-section">
 					<div class="search-section">
 						<el-input
-						    v-model="input"
+						    v-model="inputData"
 						    placeholder="수주번호 검색"
 						    class="search-input"
 						    :prefix-icon="Search"
 						    clearable
 						  />
-						<el-button type="primary" :icon="Search" class="search-button">
+						<el-button type="primary" :icon="Search" class="search-button" @click="searchData">
 						  조회
 						</el-button>
 					</div>
@@ -41,9 +41,9 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="name" label="수주번호" width="180" sortable />
-				<el-table-column prop="address" label="평균속도" width="120">
+				<el-table-column prop="address" label="평균속도(m/s)" width="120">
 					<template #default="scope">
-						<span class="numeric-value">{{ scope.row.address }} m/s</span>
+						<span class="numeric-value">{{ scope.row.address }}</span>
 					</template>
 				</el-table-column>
 				<el-table-column prop="address" label="자폭(mm)" />
@@ -87,28 +87,76 @@
 							<span class="numeric-value">{{ scope.row.address }} m/s</span>
 						</template>
 					</el-table-column>
-					<el-table-column prop="address" label="자폭(mm)" />
-					<el-table-column prop="address" label="장(m)" />
-					<el-table-column prop="address" label="넓이(㎡)" />
-					<el-table-column prop="address" label="사용전력량(kwh)" />
-					<el-table-column prop="address" label="사용에어량(L)" />
-					<el-table-column prop="address" label="사용가스량(m³)" />
+					<el-table-column prop="width" label="자폭(mm)">
+						<template #default="scope">
+							<span class="numeric-value">{{ scope.row.width }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="length" label="장(m)">
+						<template #default="scope">
+							<span class="numeric-value">{{ scope.row.length }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="square" label="넓이(㎡)">
+						<template #default="scope">
+							<span class="numeric-value">{{ scope.row.square }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="energy" label="사용전력량(kwh)">
+						<template #default="scope">
+							<span class="numeric-value">{{ scope.row.energy }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="air" label="사용에어량(L)">
+						<template #default="scope">
+							<span class="numeric-value">{{ scope.row.air }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="gas" label="사용가스량(m³)">
+						<template #default="scope">
+							<span class="numeric-value">{{ scope.row.gas }}</span>
+						</template>
+					</el-table-column>
 				</el-table>
+
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { Search, Histogram, List, Download, Refresh } from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
 
-const input = ref('')
+const inputData = ref('')
+const isLoading = ref(false)
 
 const format = (percentage) => {
   return `${(percentage / 100 * 1000).toFixed(1)} kWh`
 }
 
+const searchData = async () => {
+	isLoading.value = true
+
+	// Node-RED로 데이터 요청
+	const ws_search = new WebSocket('ws://localhost:1880/ws/selectCorrugator')
+	ws_search.onopen = () => {
+		ws_search.send(inputData.value)
+	}
+
+	ws_search.onmessage = (event) => {
+		try {
+			isLoading.value = false
+			ws.close()
+
+		} catch (error) {
+			console.error('데이터 파싱 오류:', error)
+			ElMessage.error('데이터 처리 중 오류가 발생했습니다.')
+			isLoading.value = false
+		}
+	}
+}
 const tableRowClassName = ({ rowIndex }) => {
   if (rowIndex === 1) {
     return 'warning-row'
@@ -140,29 +188,84 @@ const tableData = [
     address: 'No. 189, Grove St, Los Angeles',
   },
 ]
+const tableData2 = ref([])
 
-const tableData2 = [
-	{
-		date: '2016-05-03 23:11:44',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-	{
-		date: '2016-05-02 23:11:44',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-	{
-		date: '2016-05-04 23:11:44',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-	{
-		date: '2016-05-01 23:11:44',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-];
+// const tableData2 = [
+// 	{
+// 		date: '2016-05-03 23:11:44',
+// 		name: 'Tom',
+// 		address: 'No. 189, Grove St, Los Angeles',
+// 	},
+// 	{
+// 		date: '2016-05-02 23:11:44',
+// 		name: 'Tom',
+// 		address: 'No. 189, Grove St, Los Angeles',
+// 	},
+// 	{
+// 		date: '2016-05-04 23:11:44',
+// 		name: 'Tom',
+// 		address: 'No. 189, Grove St, Los Angeles',
+// 	},
+// 	{
+// 		date: '2016-05-01 23:11:44',
+// 		name: 'Tom',
+// 		address: 'No. 189, Grove St, Los Angeles',
+// 	},
+// ];
+
+let ws = null
+
+onMounted(() => {
+	ws = new WebSocket('ws://localhost:1880/ws/corrugatorusage')
+
+	ws.onopen = () => {
+		console.log('WebSocket 연결 성공')
+	}
+
+	ws.onmessage = (event) => {
+		try {
+			// 들어오는 데이터 로깅
+			console.log('수신된 원본 데이터:', event.data)
+
+			// 데이터가 이미 객체인지 확인
+			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+
+			// 파싱된 데이터 로깅
+			console.log('파싱된 데이터:', data)
+			// 받은 데이터를 직접 tableData2에 할당 (덮어쓰기)
+			tableData2.value = data.map(item => ({
+				date: item.daytime,        // 시작시간
+				name: item.suze,           // 수주번호
+				width: item.width1,        // 자폭(mm)
+				length: item.targetlength, // 장(m)
+				square: item.square,       // 넓이(㎡)
+				address: item.AVG_SPEED,   // 평균속도
+				energy: item.TOTAL_ENERGY_SUM,      // 사용전력량(kwh)
+				air: item.TOTAL_corr_air_liter,     // 사용에어량(L)
+				gas: 0                     // 사용가스량(m³)
+			}))
+
+
+		} catch (e) {
+			console.error('데이터 처리 중 오류 발생:', e)
+			console.error('문제가 된 데이터:', event.data)
+		}
+	}
+
+	ws.onerror = (err) => {
+		console.error('WebSocket 오류:', err)
+	}
+
+	ws.onclose = () => {
+		console.log('WebSocket 연결 종료')
+		// 재연결 로직 추가
+		setTimeout(() => {
+			console.log('WebSocket 재연결 시도...')
+			onMounted()
+		}, 5000)
+	}
+})
+
 </script>
 
 <style scoped>

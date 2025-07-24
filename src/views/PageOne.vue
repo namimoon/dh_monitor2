@@ -24,7 +24,7 @@ import { ref, computed } from 'vue'
 import { useWebSocket } from '@/composables/useWebSocket'
 
 // WebSocket으로부터 전체 메시지 받아옴
-const { message } = useWebSocket('ws://192.168.0.115:1880/ws/data') // 이 IP는 Node-RED 주소에 맞게 조정하세요
+const { message } = useWebSocket('ws://localhost:1880/ws/data') // 이 IP는 Node-RED 주소에 맞게 조정하세요
 
 // 사용자가 입력한 키
 const selectedKey = ref('bit0')
