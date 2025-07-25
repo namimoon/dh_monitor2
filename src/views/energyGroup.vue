@@ -2,6 +2,10 @@
 <template>
 	<div class="charts-container">
 		<div class="chart-wrapper">
+			<h2>Speed</h2>
+			<Line :data="speedChartData" :options="chartOptions" />
+		</div>
+		<div class="chart-wrapper">
 			<h2>power 사용량</h2>
 			<Line :data="energyChartData" :options="chartOptions" />
 		</div>
@@ -52,7 +56,7 @@ const createChartData = () => ({
 	}]
 })
 
-// const speedChartData = ref(createChartData())
+const speedChartData = ref(createChartData())
 const energyChartData = ref(createChartData())
 const airChartData = ref(createChartData())
 const gasChartData = ref(createChartData())

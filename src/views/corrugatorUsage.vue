@@ -27,7 +27,7 @@
 				</div>
 
 				<el-table
-				  :data="tableData"
+				  :data="recentData"
 				  style="width: 100%"
 				  :row-class-name="tableRowClassName"
 				  stripe
@@ -68,7 +68,7 @@
 			<div class="page-container">
 				<!-- 여기에 두 번째 섹션의 내용을 추가 -->
 				<el-table
-					:data="tableData2"
+					:data="recentData"
 					style="width: 100%"
 					:row-class-name="tableRowClassName"
 					stripe
@@ -147,7 +147,27 @@ const searchData = async () => {
 
 	ws_search.onmessage = (event) => {
 		try {
+			// 들어오는 데이터 로깅
+			console.log('수신된 원본 데이터:', event.data)
+			// 데이터가 이미 객체인지 확인
+			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+			// 파싱된 데이터 로깅
+			console.log('파싱된 데이터:', data)
+			resultData.value = data.map(item => ({
+				date: item.daytime,        // 시작시간
+				name: item.suze,           // 수주번호
+				width: item.width1,        // 자폭(mm)
+				length: item.targetlength, // 장(m)
+				square: item.square,       // 넓이(㎡)
+				address: item.AVG_SPEED,   // 평균속도
+				energy: item.TOTAL_ENERGY_SUM,      // 사용전력량(kwh)
+				air: item.TOTAL_corr_air_liter,     // 사용에어량(L)
+				gas: 0                     // 사용가스량(m³)
+			}))
+			
+			
 			isLoading.value = false
+			
 			ws.close()
 
 		} catch (error) {
@@ -166,6 +186,7 @@ const tableRowClassName = ({ rowIndex }) => {
   return ''
 }
 
+const resultData = ref([])
 const tableData = [
   {
     date: '2016-05-03 23:11:44',
@@ -188,9 +209,9 @@ const tableData = [
     address: 'No. 189, Grove St, Los Angeles',
   },
 ]
-const tableData2 = ref([])
+const recentData = ref([])
 
-// const tableData2 = [
+// const recentData = [
 // 	{
 // 		date: '2016-05-03 23:11:44',
 // 		name: 'Tom',
@@ -232,8 +253,8 @@ onMounted(() => {
 
 			// 파싱된 데이터 로깅
 			console.log('파싱된 데이터:', data)
-			// 받은 데이터를 직접 tableData2에 할당 (덮어쓰기)
-			tableData2.value = data.map(item => ({
+			// 받은 데이터를 직접 recentData에 할당 (덮어쓰기)
+			recentData.value = data.map(item => ({
 				date: item.daytime,        // 시작시간
 				name: item.suze,           // 수주번호
 				width: item.width1,        // 자폭(mm)
