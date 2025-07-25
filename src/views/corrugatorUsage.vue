@@ -27,7 +27,7 @@
 				</div>
 
 				<el-table
-				  :data="recentData"
+				  :data="resultData"
 				  style="width: 100%"
 				  :row-class-name="tableRowClassName"
 				  stripe
@@ -140,7 +140,7 @@ const searchData = async () => {
 	isLoading.value = true
 
 	// Node-RED로 데이터 요청
-	const ws_search = new WebSocket('ws://localhost:1880/ws/selectCorrugator')
+	const ws_search = new WebSocket('ws://localhost:1880/ws/suzunum')
 	ws_search.onopen = () => {
 		ws_search.send(inputData.value)
 	}
@@ -148,11 +148,11 @@ const searchData = async () => {
 	ws_search.onmessage = (event) => {
 		try {
 			// 들어오는 데이터 로깅
-			console.log('수신된 원본 데이터:', event.data)
+			// console.log('수신된 원본 데이터:', event.data)
 			// 데이터가 이미 객체인지 확인
 			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
 			// 파싱된 데이터 로깅
-			console.log('파싱된 데이터:', data)
+			// console.log('파싱된 데이터:', data)
 			resultData.value = data.map(item => ({
 				date: item.daytime,        // 시작시간
 				name: item.suze,           // 수주번호
@@ -177,14 +177,14 @@ const searchData = async () => {
 		}
 	}
 }
-const tableRowClassName = ({ rowIndex }) => {
-  if (rowIndex === 1) {
-    return 'warning-row'
-  } else if (rowIndex === 3) {
-    return 'success-row'
-  }
-  return ''
+const tableRowClassName = ({ row, rowIndex }) => {
+	// recentData 테이블의 첫 번째 행만 빨간색으로 표시
+	if (rowIndex === 0 && row === recentData.value[0]) {
+		return 'first-row'
+	}
+	return ''
 }
+
 
 const resultData = ref([])
 const tableData = [
@@ -246,13 +246,13 @@ onMounted(() => {
 	ws.onmessage = (event) => {
 		try {
 			// 들어오는 데이터 로깅
-			console.log('수신된 원본 데이터:', event.data)
+			// console.log('수신된 원본 데이터:', event.data)
 
 			// 데이터가 이미 객체인지 확인
 			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
 
 			// 파싱된 데이터 로깅
-			console.log('파싱된 데이터:', data)
+			// console.log('파싱된 데이터:', data)
 			// 받은 데이터를 직접 recentData에 할당 (덮어쓰기)
 			recentData.value = data.map(item => ({
 				date: item.daytime,        // 시작시간
@@ -380,6 +380,20 @@ onMounted(() => {
 .success-row {
   --el-table-tr-bg-color: var(--el-color-success-light-9);
 }
+:deep(.first-row) {
+	background-color: #fef0f0 !important;
+}
+
+:deep(.first-row td) {
+	background-color: #fef0f0 !important;
+	color: #f56c6c;
+}
+/* stripe 속성이 있는 경우를 위한 추가 스타일 */
+:deep(.el-table--striped .first-row td) {
+	background-color: #fef0f0 !important;
+}
+
+
 
 :deep(.el-progress-bar__outer) {
   border-radius: 4px;
