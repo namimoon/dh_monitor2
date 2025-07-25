@@ -141,7 +141,7 @@ onMounted(() => {
 	ws.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
-			// console.log('data : ', data);
+			console.log('===data : ', data);
 			const timestamp = data.timestamp
 
 			// 각 그래프 데이터 업데이트
