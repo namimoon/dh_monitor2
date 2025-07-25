@@ -129,9 +129,9 @@ const chartData3 = {
 }
 
 let ws_energy = null
+let ws_speed = null  // 새로운 WebSocket 변수
 
-onMounted(() => {
-	// WebSocket 연결
+const connectEnergyWebSocket = () => {
 	ws_energy = new WebSocket('ws://localhost:1880/ws/energygroup')
 
 	ws_energy.onopen = () => {
@@ -141,22 +141,67 @@ onMounted(() => {
 	ws_energy.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
-			console.log('=--==data : ', data);
+			console.log('=--==data : ', data)
 			const timestamp = data.timestamp
 
 			// 각 그래프 데이터 업데이트
 			updateChartData(energyChartData, data.graphs.energy.value, timestamp)
 			updateChartData(airChartData, data.graphs.air.value, timestamp)
 			updateChartData(gasChartData, data.graphs.gas.value, timestamp)
-			// updateChartData(speedChartData, data.graphs.speed.value, timestamp)
 		} catch (e) {
 			console.error('데이터 처리 오류:', e)
 		}
 	}
+
+	ws_energy.onerror = (error) => {
+		console.error('WebSocket energygroup 오류:', error)
+		ws_energy.close()
+	}
+
+	ws_energy.onclose = (event) => {
+		console.warn('WebSocket energygroup 연결 끊김. 재연결 시도...', event.code, event.reason)
+		setTimeout(connectEnergyWebSocket, 3000) // 3초 후 재연결 시도
+	}
+}
+
+// Speed WebSocket 연결 함수
+const connectSpeedWebSocket = () => {
+	ws_speed = new WebSocket('ws://localhost:1880/ws/speed')
+
+	ws_speed.onopen = () => {
+		console.log('WebSocket speed 연결 성공')
+	}
+
+	ws_speed.onmessage = (event) => {
+		try {
+			const data = JSON.parse(event.data)
+			const timestamp = data.timestamp || new Date().toLocaleTimeString()
+			updateChartData(speedChartData, data.value, timestamp)
+		} catch (e) {
+			console.error('Speed 데이터 처리 오류:', e)
+		}
+	}
+
+	ws_speed.onerror = (error) => {
+		console.error('WebSocket speed 오류:', error)
+		ws_speed.close()
+	}
+
+	ws_speed.onclose = (event) => {
+		console.warn('WebSocket speed 연결 끊김. 재연결 시도...', event.code, event.reason)
+		setTimeout(connectSpeedWebSocket, 3000) // 3초 후 재연결 시도
+	}
+}
+
+onMounted(() => {
+	connectEnergyWebSocket()
+	connectSpeedWebSocket()
+
 })
 
 onBeforeUnmount(() => {
 	if (ws_energy) ws_energy.close()
+	if (ws_speed) ws_speed.close()
 })
 
 const chartOptions = {
