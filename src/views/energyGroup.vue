@@ -128,17 +128,17 @@ const chartData3 = {
 	}]
 }
 
-let ws = null
+let ws_energy = null
 
 onMounted(() => {
 	// WebSocket 연결
-	ws = new WebSocket('ws://localhost:1880/ws/energygroup')
+	ws_energy = new WebSocket('ws://localhost:1880/ws/energygroup')
 
-	ws.onopen = () => {
+	ws_energy.onopen = () => {
 		console.log('WebSocket energygroup 연결 성공')
 	}
 
-	ws.onmessage = (event) => {
+	ws_energy.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
 			console.log('=--==data : ', data);
@@ -156,7 +156,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-	if (ws) ws.close()
+	if (ws_energy) ws_energy.close()
 })
 
 const chartOptions = {
