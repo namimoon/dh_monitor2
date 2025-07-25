@@ -167,15 +167,28 @@ const searchData = async () => {
 			
 			
 			isLoading.value = false
-			
-			ws.close()
+
+			// 데이터를 모두 처리한 후에 연결 종료
+			setTimeout(() => {
+				ws_search.close()
+			}, 1000)
+
 
 		} catch (error) {
 			console.error('데이터 파싱 오류:', error)
 			ElMessage.error('데이터 처리 중 오류가 발생했습니다.')
 			isLoading.value = false
+			ws_search.close()
+
 		}
 	}
+
+	ws_search.onerror = (error) => {
+		console.error('WebSocket 오류:', error)
+		ElMessage.error('연결 중 오류가 발생했습니다.')
+		isLoading.value = false
+	}
+
 }
 const tableRowClassName = ({ row, rowIndex }) => {
 	// recentData 테이블의 첫 번째 행만 빨간색으로 표시
