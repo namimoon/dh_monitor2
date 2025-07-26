@@ -19,7 +19,7 @@
 			<div class="order-card">
 				<el-card shadow="hover" class="order-number-card">
 					<div class="order-label">수주번호</div>
-					<div class="order-number">2025072400508</div>
+					<div class="order-number">{{ orderNumber }}</div>
 				</el-card>
 			</div>
 		</div>
@@ -43,7 +43,7 @@
 						class="main-progress"
 					/>
 					<div class="progress-details">
-						<span class="current-value">{{ currentProgress }}</span>
+						<span class="current-value">{{ currentProgress }}</span>/
 						<span class="target-value">{{ targetProgress }}</span>
 					</div>
 				</div>
@@ -68,19 +68,19 @@
 				class="custom-descriptions"
 			>
 				<el-descriptions-item label="Set Quality Meter">
-					<span class="metric-value">8,681 m</span>
+					<span class="metric-value">{{ setQulitymeter }} m</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="Max speed">
-					<span class="metric-value">400</span>
+					<span class="metric-value">{{ maxSpeed }}</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="WPA Width">
-					<span class="metric-value">1,400 mm</span>
+					<span class="metric-value">{{ wpaWidth }} mm</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="Target Length">
-					<span class="metric-value">1,240 mm</span>
+					<span class="metric-value">{{ targetLength }} mm</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="Set count">
-					<span class="metric-value">3,538 Cuts</span>
+					<span class="metric-value">{{ setCount }} Cuts</span>
 				</el-descriptions-item>
 			</el-descriptions>
 		</div>
@@ -101,13 +101,13 @@
 				class="custom-descriptions energy-section"
 			>
 				<el-descriptions-item label="TOTAL 전력량">
-					<span class="energy-value total">66.233 kwh</span>
+					<span class="energy-value total">{{ totalPower }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="MF2 전력량">
-					<span class="energy-value">7.406 kwh</span>
+					<span class="energy-value">{{ mf2Power }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="MF1 전력량">
-					<span class="energy-value">9.750 kwh</span>
+					<span class="energy-value">{{ mf1Power }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="DF 전력량">
 					<span class="energy-value">4.562 kwh</span>
@@ -172,24 +172,9 @@
 				<Line :data="speedChartData" :options="chartOptions" />
 			</div>
 		</div>
-		
-		<!-- 상태 표시줄 -->
-		<div class="status-bar">
-			<div class="refresh-timer">
-				<el-icon><Refresh /></el-icon>
-				다음 새로고침까지: <span class="timer-value">{{ refreshTime }}초</span>
-			</div>
-			<div class="connection-status">
-				<el-tag :type="isConnected ? 'success' : 'danger'" size="small">
-					{{ isConnected ? '연결됨' : '연결 끊김' }}
-				</el-tag>
-			</div>
-		</div>
-	
+
+
 	</div>
-	
-	
-	
 </template>
 
 <script setup>
@@ -227,7 +212,6 @@ ChartJS.register(
 
 // 반응형 데이터
 const refreshTime = ref(3580)
-const isConnected = ref(false)
 const currentProgress = ref(2450)
 const targetProgress = ref(3538)
 
@@ -265,6 +249,36 @@ const startRefreshTimer = () => {
 	}, 1000)
 }
 
+const orderNumber = ref('');
+const setQulitymeter = ref('');
+const maxSpeed = ref('');
+const wpaWidth = ref('');
+const targetLength = ref('');
+const setCount = ref('');
+
+const actQulityMeter = ref('');
+const speed = ref('');
+const width = ref('');
+const actCutLength = ref('');
+const actCount = ref('');
+
+const totalPower = ref('');
+const mf2Power = ref('');
+const mf1Power = ref('');
+const dfPower = ref('');
+const dryEndPower = ref('');
+const controlPower = ref('');
+
+const totalAir = ref('');
+
+const totalGas = ref('');
+const gas1CV = ref('');
+const gas1V = ref('');
+const gas1Pressure = ref('');
+const gas1T = ref('');
+const gas1VS = ref('');
+
+
 
 onMounted(() => {
 	// WebSocket 연결
@@ -272,28 +286,64 @@ onMounted(() => {
 	
 	ws.onopen = () => {
 		console.log('WebSocket selectCorrugatorMain 연결 성공')
-		isConnected.value = true
-		
+
 	}
 	
 	ws.onmessage = (event) => {
 		try {
-			const data = JSON.parse(event.data)
+			// 들어오는 데이터 로깅
+			console.log('수신된 원본 데이터:', event.data)
+
+			// 데이터가 이미 객체인지 확인
+			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+			orderNumber.value = data.suze  // 수주번호 업데이트
+
+			setQulitymeter.value = data.setqulitymeter
+			maxSpeed.value = data.maxspeed
+			wpaWidth.value = data.width1
+			targetLength.value = data.targetlength
+			setCount.value = data.setcount
+
+			actQulityMeter.value = data.actqulitymeter
+			speed.value = data.speed
+			width.value = data.width
+			actCutLength.value = data.actcutlength
+			actCount.value = data.actcount
+
+			totalPower.value = data.TOTAL
+			mf2Power.value = data.TOTAL_E11_KWh
+			mf1Power.value = data.TOTAL_E12_KWh
+			dfPower.value = data.TOTAL_E13_KWh
+			dryEndPower.value = data.TOTAL_E14_KWh
+			controlPower.value = data.TOTAL_E15_KWh
+
+			totalAir.value = data.TOTAL_corr_air_liter
+			totalGas.value = data.
+			gas1CV.value = data.gas_cv
+			gas1V.value = data.gas_v
+			gas1Pressure.value = data.gas_pressure
+			gas1T.value = data.gas_t
+			gas1VS.value = data.gas_speed
+
 			// 데이터 처리 로직
 		} catch (e) {
 			console.error('데이터 처리 오류:', e)
 		}
 	};
-	
+
+	ws.onerror = (err) => {
+		console.error('WebSocket 오류:', err)
+	}
+
 	ws.onclose = () => {
-		isConnected.value = false
+		console.log('WebSocket 연결 종료')
+		// 재연결 로직 추가
+		setTimeout(() => {
+			console.log('WebSocket 재연결 시도...')
+			onMounted()
+		}, 5000)
 	}
-	
-	ws.onerror = () => {
-		isConnected.value = false
-	}
-	
-	startRefreshTimer()
+
 });
 
 onBeforeUnmount(() => {

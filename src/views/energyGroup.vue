@@ -61,7 +61,7 @@ const energyChartData = ref(createChartData())
 const airChartData = ref(createChartData())
 const gasChartData = ref(createChartData())
 
-const maxDataPoints = 20 // 최대 데이터 포인트 수
+const maxDataPoints = 50 // 최대 데이터 포인트 수
 
 // 각 그래프별 데이터 업데이트 함수
 const updateChartData = (chartData, newValue, timestamp) => {
