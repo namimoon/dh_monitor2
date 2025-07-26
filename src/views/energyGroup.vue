@@ -14,7 +14,7 @@
 			<Line :data="airChartData" :options="chartOptions" />
 		</div>
 		<div class="chart-wrapper">
-			<h2>gas 3</h2>
+			<h2>gas</h2>
 			<Line :data="gasChartData" :options="chartOptions" />
 		</div>
 	</div>
@@ -175,7 +175,6 @@ const connectSpeedWebSocket = () => {
 	ws_speed.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
-			console.log('=--==data : ', data)
 			const timestamp = data.timestamp || new Date().toLocaleTimeString()
 			updateChartData(speedChartData, data.value, timestamp)
 		} catch (e) {

@@ -233,6 +233,7 @@ const targetProgress = ref(3538)
 
 let ws = null
 let ws_power = null;
+let ws_speed = null
 
 const createChartData = () => ({
 	labels: [],
@@ -327,7 +328,58 @@ const connectPowerWebSocket = () => {
 	}
 }
 
+const updateChartData = (chartData, newValue, timestamp) => {
 
+
+	// 새로운 배열을 만들어서 할당
+	const newLabels = [...chartData.value.labels, timestamp];
+	const newData = [...chartData.value.datasets[0].data, newValue];
+
+	// 데이터 포인트 수 제한
+	if (newLabels.length > maxDataPoints) {
+		newLabels.shift()
+		newData.shift()
+	}
+
+	// 새로운 객체로 한 번에 할당
+	chartData.value = {
+		labels: newLabels,
+		datasets: [{
+			data: newData,
+			borderColor: 'rgb(75, 192, 192)',
+			backgroundColor: 'rgba(75, 192, 192, 0.2)',
+			fill: true,
+			tension: 0.4
+		}]
+	}
+}
+const connectSpeedWebSocket = () => {
+	ws_speed = new WebSocket('ws://localhost:1880/ws/speed')
+
+	ws_speed.onopen = () => {
+		console.log('WebSocket speed 연결 성공')
+	}
+
+	ws_speed.onmessage = (event) => {
+		try {
+			const data = JSON.parse(event.data)
+			const timestamp = data.timestamp || new Date().toLocaleTimeString()
+			updateChartData(speedChartData, data.value, timestamp)
+		} catch (e) {
+			console.error('Speed 데이터 처리 오류:', e)
+		}
+	}
+
+	ws_speed.onerror = (error) => {
+		console.error('WebSocket speed 오류:', error)
+		ws_speed.close()
+	}
+
+	ws_speed.onclose = (event) => {
+		console.warn('WebSocket speed 연결 끊김. 재연결 시도...', event.code, event.reason)
+		setTimeout(connectSpeedWebSocket, 3000) // 3초 후 재연결 시도
+	}
+}
 onMounted(() => {
 	// WebSocket 연결
 	ws = new WebSocket('ws://localhost:1880/ws/selectCorrugatorProgress');
@@ -378,12 +430,14 @@ onMounted(() => {
 
 	// power WebSocket 연결 추가
 	connectPowerWebSocket()
+	connectSpeedWebSocket()
 
 });
 
 onBeforeUnmount(() => {
 	if (ws) ws.close()
 	if (ws_power) ws_power.close()
+	if (ws_speed) ws_speed.close()
 })
 
 const chartOptions = {
