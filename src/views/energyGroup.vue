@@ -141,7 +141,7 @@ const connectEnergyWebSocket = () => {
 	ws_energy.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
-			console.log('=--==data : ', data)
+			// console.log('=--==data : ', data)
 			const timestamp = data.timestamp
 
 			// 각 그래프 데이터 업데이트
@@ -175,6 +175,7 @@ const connectSpeedWebSocket = () => {
 	ws_speed.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
+			console.log('=--==data : ', data)
 			const timestamp = data.timestamp || new Date().toLocaleTimeString()
 			updateChartData(speedChartData, data.value, timestamp)
 		} catch (e) {

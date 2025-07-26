@@ -57,7 +57,7 @@
 			<div class="section-header">
 				<h3>
 					<el-icon><Setting /></el-icon>
-					운전 정보
+					진행 정보
 				</h3>
 			</div>
 			<el-descriptions
