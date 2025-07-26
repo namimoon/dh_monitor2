@@ -82,6 +82,22 @@
 				<el-descriptions-item label="Set count">
 					<span class="metric-value">{{ setCount }} Cuts</span>
 				</el-descriptions-item>
+
+				<el-descriptions-item label="Act Qulity Meter">
+					<span class="metric-value">{{ actQulityMeter }} m</span>
+				</el-descriptions-item>
+				<el-descriptions-item label="Speed">
+					<span class="metric-value">{{ speed }}</span>
+				</el-descriptions-item>
+				<el-descriptions-item label="Width">
+					<span class="metric-value">{{ width }} mm</span>
+				</el-descriptions-item>
+				<el-descriptions-item label="Act Cut Length">
+					<span class="metric-value">{{ actCutLength }} mm</span>
+				</el-descriptions-item>
+				<el-descriptions-item label="Act count">
+					<span class="metric-value">{{ actCount }} Cuts</span>
+				</el-descriptions-item>
 			</el-descriptions>
 		</div>
 		
@@ -215,9 +231,8 @@ const refreshTime = ref(3580)
 const currentProgress = ref(2450)
 const targetProgress = ref(3538)
 
-
-let timer = null
 let ws = null
+let ws_power = null;
 
 const createChartData = () => ({
 	labels: [],
@@ -238,16 +253,6 @@ const createChartData = () => ({
 const speedChartData = ref(createChartData())
 const maxDataPoints = 20 // 최대 데이터 포인트 수
 
-// 타이머 함수
-const startRefreshTimer = () => {
-	timer = setInterval(() => {
-		if (refreshTime.value > 0) {
-			refreshTime.value--
-		} else {
-			refreshTime.value = 3580
-		}
-	}, 1000)
-}
 
 const orderNumber = ref('');
 const setQulitymeter = ref('');
@@ -278,11 +283,54 @@ const gas1Pressure = ref('');
 const gas1T = ref('');
 const gas1VS = ref('');
 
+// power WebSocket 연결 함수 추가
+const connectPowerWebSocket = () => {
+	ws_power = new WebSocket('ws://localhost:1880/ws/selectCorrugatorPower')
+
+	ws_power.onopen = () => {
+		console.log('WebSocket power 연결 성공')
+	}
+
+	ws_power.onmessage = (event) => {
+		try {
+			const data = JSON.parse(event.data)
+			// 전력량 데이터 업데이트
+			totalPower.value = data.TOTAL || '0'
+			mf2Power.value = data.TOTAL_E11_KWh || '0'
+			mf1Power.value = data.TOTAL_E12_KWh || '0'
+			dfPower.value = data.TOTAL_E13_KWh || '0'
+			dryEndPower.value = data.TOTAL_E14_KWh || '0'
+			controlPower.value = data.TOTAL_E15_KWh || '0'
+
+			// 에어량 데이터 업데이트
+			totalAir.value = data.TOTAL_corr_air_liter || '0'
+
+			totalGas.value = '0'
+			gas1CV.value = data.gas_cv
+			gas1V.value = data.gas_v
+			gas1Pressure.value = data.gas_pressure
+			gas1T.value = data.gas_t
+			gas1VS.value = data.gas_speed
+		} catch (e) {
+			console.error('Power 데이터 처리 오류:', e)
+		}
+	}
+
+	ws_power.onerror = (error) => {
+		console.error('WebSocket power 오류:', error)
+		ws_power.close()
+	}
+
+	ws_power.onclose = (event) => {
+		console.warn('WebSocket power 연결 끊김. 재연결 시도...', event.code, event.reason)
+		setTimeout(connectPowerWebSocket, 3000) // 3초 후 재연결 시도
+	}
+}
 
 
 onMounted(() => {
 	// WebSocket 연결
-	ws = new WebSocket('ws://localhost:1880/ws/selectCorrugatorMain');
+	ws = new WebSocket('ws://localhost:1880/ws/selectCorrugatorProgress');
 	
 	ws.onopen = () => {
 		console.log('WebSocket selectCorrugatorMain 연결 성공')
@@ -298,34 +346,18 @@ onMounted(() => {
 			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
 			orderNumber.value = data.suze  // 수주번호 업데이트
 
-			setQulitymeter.value = data.setqulitymeter
-			maxSpeed.value = data.maxspeed
-			wpaWidth.value = data.width1
-			targetLength.value = data.targetlength
-			setCount.value = data.setcount
+			setQulitymeter.value = data.setqulitymeter || '0'
+			maxSpeed.value = data.maxspeed || '0'
+			wpaWidth.value = data.width1 || '0'
+			targetLength.value = data.targetlength || '0'
+			setCount.value = data.setcount || '0'
 
-			actQulityMeter.value = data.actqulitymeter
-			speed.value = data.speed
-			width.value = data.width
-			actCutLength.value = data.actcutlength
-			actCount.value = data.actcount
+			actQulityMeter.value = data.actqulitymeter || '0'
+			speed.value = data.speed || '0'
+			width.value = data.width || '0'
+			actCutLength.value = data.actcutlength || '0'
+			actCount.value = data.actcount || '0'
 
-			totalPower.value = data.TOTAL
-			mf2Power.value = data.TOTAL_E11_KWh
-			mf1Power.value = data.TOTAL_E12_KWh
-			dfPower.value = data.TOTAL_E13_KWh
-			dryEndPower.value = data.TOTAL_E14_KWh
-			controlPower.value = data.TOTAL_E15_KWh
-
-			totalAir.value = data.TOTAL_corr_air_liter
-			totalGas.value = data.
-			gas1CV.value = data.gas_cv
-			gas1V.value = data.gas_v
-			gas1Pressure.value = data.gas_pressure
-			gas1T.value = data.gas_t
-			gas1VS.value = data.gas_speed
-
-			// 데이터 처리 로직
 		} catch (e) {
 			console.error('데이터 처리 오류:', e)
 		}
@@ -344,11 +376,14 @@ onMounted(() => {
 		}, 5000)
 	}
 
+	// power WebSocket 연결 추가
+	connectPowerWebSocket()
+
 });
 
 onBeforeUnmount(() => {
 	if (ws) ws.close()
-	if (timer) clearInterval(timer)
+	if (ws_power) ws_power.close()
 })
 
 const chartOptions = {
