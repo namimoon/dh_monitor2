@@ -7,49 +7,51 @@
 				Corrugator 실시간 모니터링
 			</div>
 		</div>
-		
-		<!-- 수주번호 섹션 -->
-		<div class="info-section">
-			<div class="section-header">
-				<h3>
-					<el-icon><Document /></el-icon>
-					수주번호 정보
-				</h3>
+
+		<!-- 수주번호와 진행률 섹션을 감싸는 컨테이너 -->
+		<div class="info-container">
+			<!-- 수주번호 섹션 -->
+			<div class="info-section order-section">
+				<div class="section-header">
+					<h3>
+						<el-icon><Document /></el-icon>
+						수주번호 정보
+					</h3>
+				</div>
+				<div class="order-card">
+					<el-card shadow="hover" class="order-number-card">
+						<div class="order-label">수주번호</div>
+						<div class="order-number">{{ orderNumber }}</div>
+					</el-card>
+				</div>
 			</div>
-			<div class="order-card">
-				<el-card shadow="hover" class="order-number-card">
-					<div class="order-label">수주번호</div>
-					<div class="order-number">{{ orderNumber }}</div>
-				</el-card>
-			</div>
-		</div>
-		
-		<!-- 진행률 섹션 -->
-		<div class="info-section">
-			<div class="section-header">
-				<h3>
-					<el-icon><Trophy /></el-icon>
-					작업 진행률
-				</h3>
-			</div>
-			<div class="progress-container">
-				<div class="progress-item">
-					<div class="progress-label">전체 작업 진행률</div>
-					<el-progress
-						:percentage="progressPercentage"
-						:stroke-width="20"
-						:text-inside="true"
-						:color="progressColor"
-						class="main-progress"
-					/>
-					<div class="progress-details">
-						<span class="current-value">{{ setCount }}</span>/
-						<span class="target-value">{{ actCount }}</span>
+
+			<!-- 진행률 섹션 -->
+			<div class="info-section progress-section">
+				<div class="section-header">
+					<h3>
+						<el-icon><Trophy /></el-icon>
+						작업 진행률
+					</h3>
+				</div>
+				<div class="progress-container">
+					<div class="progress-item">
+						<div class="progress-label">전체 작업 진행률</div>
+						<el-progress
+							:percentage="progressPercentage"
+							:stroke-width="20"
+							:text-inside="true"
+							:color="progressColor"
+							class="main-progress"
+						/>
+						<div class="progress-details">
+							<span class="current-value">{{ setCount }}</span>/
+							<span class="target-value">{{ actCount }}</span>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
 		
 		<!-- 운전 정보 섹션 -->
 		<div class="info-section">
@@ -522,6 +524,45 @@ const chartOptions = {
 	font-size: 32px;
 	color: #409EFF;
 }
+.info-container {
+	display: flex;
+	gap: 24px;
+	margin-bottom: 24px;
+	align-items: stretch; /* 컨테이너 내의 요소들을 같은 높이로 맞춤 */
+}
+
+.order-section {
+	flex: 0 0 200px; /* 수주번호 섹션의 고정 너비 */
+	display: flex;
+	flex-direction: column;
+}
+.progress-section {
+	flex: 1; /* 진행률 섹션이 남은 공간을 모두 차지 */
+	display: flex;
+	flex-direction: column;
+}
+
+.progress-container {
+	padding: 12px; /* 패딩 감소 */
+	flex: 1;
+	display: flex;
+	align-items: center; /* 수직 중앙 정렬 */
+}
+
+.progress-item {
+	width: 100%;
+}
+
+.main-progress {
+	margin: 8px 0;
+}
+
+.progress-details {
+	text-align: right;
+	font-size: 14px;
+	color: #606266;
+}
+
 
 .info-section {
 	background: white;
@@ -553,7 +594,10 @@ const chartOptions = {
 }
 
 .order-card {
-	padding: 24px;
+	padding: 12px; /* 패딩 감소 */
+	flex: 1;
+	display: flex;
+	align-items: center; /* 수직 중앙 정렬 */
 }
 
 .order-number-card {
@@ -567,13 +611,13 @@ const chartOptions = {
 }
 
 .order-label {
-	font-size: 14px;
+	font-size: 12px;
 	color: rgba(255, 255, 255, 0.8);
-	margin-bottom: 8px;
+	margin-bottom: 4px;
 }
 
 .order-number {
-	font-size: 28px;
+	font-size: 18px;
 	font-weight: 700;
 	color: white;
 	font-family: 'Monaco', 'Menlo', monospace;

@@ -31,7 +31,7 @@
 				  style="width: 100%"
 				  :row-class-name="tableRowClassName"
 				  stripe
-				  height="calc(100vh - 280px)"
+				  :max-height="200"
 				>
 				<el-table-column prop="date" label="시작시간" width="180" sortable>
 					<template #default="scope">
@@ -306,7 +306,7 @@ onMounted(() => {
 .main-container {
 	display: flex;
 	flex-direction: column;
-	gap: 24px;
+	gap: 12px;
 	padding: 24px;
 	background-color: #f5f7fa;
 	min-height: 100vh;
@@ -336,9 +336,9 @@ onMounted(() => {
 }
 
 .page-container {
-  padding: 24px;
+  padding: 12px 24px;
   background-color: #f5f7fa;
-  min-height: 100vh;
+  min-height: auto;
 }
 
 .header-section {
