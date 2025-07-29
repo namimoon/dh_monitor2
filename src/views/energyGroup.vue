@@ -70,6 +70,7 @@ const updateChartData = (chartData, newValue, timestamp) => {
 	// 새로운 배열을 만들어서 할당
 	const newLabels = [...chartData.value.labels, timestamp];
 	const newData = [...chartData.value.datasets[0].data, newValue];
+	console.log('newLabels : ', newLabels)
 
 	// 데이터 포인트 수 제한
 	if (newLabels.length > maxDataPoints) {
