@@ -417,11 +417,11 @@ onMounted(() => {
 			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
 			orderNumber.value = data.suze  // 수주번호 업데이트
 
-			setQulitymeter.value = data.setqulitymeter || '0'
-			maxSpeed.value = data.maxspeed || '0'
-			wpaWidth.value = data.width1 || '0'
-			targetLength.value = data.targetlength || '0'
-			setCount.value = data.setcount || '0'
+			setQulitymeter.value = (data.setqulitymeter || '0').toLocaleString()
+			maxSpeed.value = (data.maxspeed || '0').toLocaleString()
+			wpaWidth.value = (data.width1 || '0').toLocaleString()
+			targetLength.value = (data.targetlength || '0').toLocaleString()
+			setCount.value = (data.setcount || '0').toLocaleString()
 
 			actQulityMeter.value = data.actqulitymeter || '0'
 			speed.value = data.speed || '0'
