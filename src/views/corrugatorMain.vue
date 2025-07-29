@@ -127,16 +127,16 @@
 					<span class="energy-value">{{ mf1Power }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="DF 전력량">
-					<span class="energy-value">4.562 kwh</span>
+					<span class="energy-value">{{ dfPower }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="DRY-END 전력량">
-					<span class="energy-value">31.500 kwh</span>
+					<span class="energy-value">{{ dryEndPower }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="CONTROL 전력량">
-					<span class="energy-value">13.015 kwh</span>
+					<span class="energy-value">{{ controlPower }} kwh</span>
 				</el-descriptions-item>
 				<el-descriptions-item label="CONTROL 에어량">
-					<span class="air-value">325,632 L</span>
+					<span class="air-value">{{ totalAir }} L</span>
 				</el-descriptions-item>
 			</el-descriptions>
 		</div>
@@ -213,8 +213,7 @@ import {
 	Setting,
 	Lightning,
 	Cpu,
-	TrendCharts,
-	Refresh
+	TrendCharts
 } from '@element-plus/icons-vue'
 
 ChartJS.register(
@@ -520,10 +519,6 @@ const chartOptions = {
 	gap: 12px;
 }
 
-.page-title .el-icon {
-	font-size: 32px;
-	color: #409EFF;
-}
 .info-container {
 	display: flex;
 	gap: 24px;
@@ -588,11 +583,6 @@ const chartOptions = {
 	gap: 8px;
 }
 
-.section-header .el-icon {
-	font-size: 20px;
-	color: #409EFF;
-}
-
 .order-card {
 	padding: 12px; /* 패딩 감소 */
 	flex: 1;
@@ -603,11 +593,6 @@ const chartOptions = {
 .order-number-card {
 	background: linear-gradient(135deg, #409EFF 0%, #66b3ff 100%);
 	border: none;
-}
-
-:deep(.order-number-card .el-card__body) {
-	padding: 24px;
-	text-align: center;
 }
 
 .order-label {
@@ -627,20 +612,6 @@ const chartOptions = {
 	margin: 24px;
 	border-radius: 8px;
 	overflow: hidden;
-}
-
-:deep(.custom-descriptions .el-descriptions__header) {
-	display: none;
-}
-
-:deep(.custom-descriptions .el-descriptions__label) {
-	font-weight: 600;
-	color: #606266;
-	background-color: #fafbfc;
-}
-
-:deep(.custom-descriptions .el-descriptions__content) {
-	font-weight: 500;
 }
 
 .metric-value {
@@ -684,10 +655,6 @@ const chartOptions = {
 	font-size: 14px;
 }
 
-.status-active {
-	color: #67C23A !important;
-}
-
 .chart-section {
 	background: white;
 	border-radius: 12px;
@@ -701,39 +668,6 @@ const chartOptions = {
 	height: 400px;
 }
 
-.status-bar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	background: white;
-	padding: 16px 24px;
-	border-radius: 12px;
-	box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-}
-
-.refresh-timer {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	color: #606266;
-	font-size: 14px;
-}
-
-.refresh-timer .el-icon {
-	animation: rotate 2s linear infinite;
-}
-
-.timer-value {
-	font-family: 'Monaco', 'Menlo', monospace;
-	font-weight: 600;
-	color: #409EFF;
-}
-
-.connection-status {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
 
 @keyframes rotate {
 	from {
@@ -757,29 +691,7 @@ const chartOptions = {
 	:deep(.custom-descriptions) {
 		margin: 16px;
 	}
-	
-	.status-bar {
-		flex-direction: column;
-		gap: 12px;
-		text-align: center;
-	}
+
 }
 
-/* Element Plus 커스터마이징 */
-:deep(.el-descriptions__body .el-descriptions__table) {
-	border-collapse: separate;
-	border-spacing: 0;
-}
-
-:deep(.el-descriptions__body .el-descriptions__table .el-descriptions__cell) {
-	border: 1px solid #ebeef5;
-}
-
-:deep(.energy-section .el-descriptions__label) {
-	background-color: #f0f9ff;
-}
-
-:deep(.gas-section .el-descriptions__label) {
-	background-color: #fef7f0;
-}
 </style>
