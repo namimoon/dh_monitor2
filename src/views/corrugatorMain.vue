@@ -423,11 +423,11 @@ onMounted(() => {
 			targetLength.value = (data.targetlength || '0').toLocaleString()
 			setCount.value = (data.setcount || '0').toLocaleString()
 
-			actQulityMeter.value = data.actqulitymeter || '0'
-			speed.value = data.speed || '0'
-			width.value = data.width || '0'
-			actCutLength.value = data.actcutlength || '0'
-			actCount.value = data.actcount || '0'
+			actQulityMeter.value = (data.actqulitymeter || '0').toLocaleString()
+			speed.value = (data.speed || '0').toLocaleString()
+			width.value = (data.width || '0').toLocaleString()
+			actCutLength.value = (data.actcutlength || '0').toLocaleString()
+			actCount.value = (data.actcount || '0').toLocaleString()
 
 		} catch (e) {
 			console.error('데이터 처리 오류:', e)
