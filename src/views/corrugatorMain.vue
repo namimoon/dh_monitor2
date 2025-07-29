@@ -292,15 +292,16 @@ const connectPowerWebSocket = () => {
 		try {
 			const data = JSON.parse(event.data)
 			// 전력량 데이터 업데이트
-			totalPower.value = data.TOTAL || '0'
-			mf2Power.value = data.TOTAL_E11_KWh || '0'
-			mf1Power.value = data.TOTAL_E12_KWh || '0'
-			dfPower.value = data.TOTAL_E13_KWh || '0'
-			dryEndPower.value = data.TOTAL_E14_KWh || '0'
-			controlPower.value = data.TOTAL_E15_KWh || '0'
+			totalPower.value = (data.TOTAL || '0').toLocaleString()
+			mf2Power.value = (data.TOTAL_E11_KWh || '0').toLocaleString()
+			mf1Power.value = (data.TOTAL_E12_KWh || '0').toLocaleString()
+			dfPower.value = (data.TOTAL_E13_KWh || '0').toLocaleString()
+			dryEndPower.value = (data.TOTAL_E14_KWh || '0').toLocaleString()
+			controlPower.value = (data.TOTAL_E15_KWh || '0').toLocaleString()
 
 			// 에어량 데이터 업데이트
-			totalAir.value = data.TOTAL_corr_air_liter || '0'
+			totalAir.value = (data.TOTAL_corr_air_liter || '0').toLocaleString()
+
 
 			totalGas.value = '0'
 			gas1CV.value = data.gas_cv
