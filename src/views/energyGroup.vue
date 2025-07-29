@@ -70,8 +70,6 @@ const updateChartData = (chartData, newValue, timestamp) => {
 	// 새로운 배열을 만들어서 할당
 	const newLabels = [...chartData.value.labels, timestamp];
 	const newData = [...chartData.value.datasets[0].data, newValue];
-	console.log('newLabels : ', newLabels)
-	console.log('newData : ', newData)
 
 	// 데이터 포인트 수 제한
 	if (newLabels.length > maxDataPoints) {
@@ -177,7 +175,7 @@ const connectSpeedWebSocket = () => {
 	ws_speed.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data)
-			console.log('=--==data : ', data)
+			// console.log('=--==data : ', data)
 			const timestamp = data.timestamp || new Date().toLocaleTimeString()
 			updateChartData(speedChartData, data.graphs.speed.value, timestamp)
 		} catch (e) {

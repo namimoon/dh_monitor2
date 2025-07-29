@@ -383,7 +383,7 @@ const connectSpeedWebSocket = () => {
 		try {
 			const data = JSON.parse(event.data)
 			const timestamp = data.timestamp || new Date().toLocaleTimeString()
-			updateChartData(speedChartData, data.value, timestamp)
+			updateChartData(speedChartData, data.graphs.speed.value, timestamp)
 		} catch (e) {
 			console.error('Speed 데이터 처리 오류:', e)
 		}
