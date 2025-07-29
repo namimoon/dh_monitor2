@@ -45,8 +45,8 @@
 							class="main-progress"
 						/>
 						<div class="progress-details">
-							<span class="current-value">{{ setCount }}</span>/
-							<span class="target-value">{{ actCount }}</span>
+							<span class="target-value">{{ actCount }}</span> /
+							<span class="current-value">{{ setCount }}</span>
 						</div>
 					</div>
 				</div>
