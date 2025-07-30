@@ -326,6 +326,9 @@ const connectPowerWebSocket = () => {
 }
 
 const progressPercentage = computed(() => {
+	console.log('actCount:', actCount.value, typeof actCount.value);
+	console.log('setCount:', setCount.value, typeof setCount.value);
+
 	// setCount와 actCount가 있는 경우에만 계산
 	// if (setCount.value && actCount.value) {
 		// setCount와 actCount 값을 숫자로 형변환
@@ -339,7 +342,7 @@ const progressPercentage = computed(() => {
 		const percentage = (act / set) * 100;
 		return Math.min(Math.round(percentage * 10) / 10, 100) // 100%를 넘지 않도록 제한
 	// }
-	return 0 // 기본값
+	// return 0 // 기본값
 })
 
 // 진행률 컴포넌트에 표시될 현재값과 목표값도 computed로 설정
