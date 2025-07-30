@@ -126,7 +126,7 @@
 
 <script setup>
 import {onMounted, ref} from 'vue'
-import { Search, Histogram, List} from '@element-plus/icons-vue'
+import { Search, Histogram, List } from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
 
 const inputData = ref('')
@@ -293,14 +293,54 @@ const connectWebSocket = () => {
 	}
 }
 
-
 onMounted(() => {
-	connectWebSocket()
-})
+	ws = new WebSocket('ws://localhost:1880/ws/corrugatorusage')
 
-onBeforeUnmount(() => {
-	if (ws.value) {
-		ws.value.close()
+	ws.onopen = () => {
+		console.log('WebSocket 연결 성공')
+	}
+
+	ws.onmessage = (event) => {
+		try {
+			// 들어오는 데이터 로깅
+			// console.log('수신된 원본 데이터:', event.data)
+
+			// 데이터가 이미 객체인지 확인
+			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+
+			// 파싱된 데이터 로깅
+			// console.log('파싱된 데이터:', data)
+			// 받은 데이터를 직접 recentData에 할당 (덮어쓰기)
+			recentData.value = data.map(item => ({
+				date: item.daytime,        // 시작시간
+				name: item.suze,           // 수주번호
+				width: item.width1,        // 자폭(mm)
+				length: item.targetlength, // 장(m)
+				square: item.square,       // 넓이(㎡)
+				address: item.AVG_SPEED,   // 평균속도
+				energy: item.TOTAL_ENERGY_SUM,      // 사용전력량(kwh)
+				air: item.TOTAL_corr_air_liter,     // 사용에어량(L)
+				gas: 0                     // 사용가스량(m³)
+			}))
+
+
+		} catch (e) {
+			console.error('데이터 처리 중 오류 발생:', e)
+			console.error('문제가 된 데이터:', event.data)
+		}
+	}
+
+	ws.onerror = (err) => {
+		console.error('WebSocket 오류:', err)
+	}
+
+	ws.onclose = () => {
+		console.log('WebSocket 연결 종료')
+		// 재연결 로직 추가
+		setTimeout(() => {
+			console.log('WebSocket 재연결 시도...')
+			onMounted()
+		}, 5000)
 	}
 })
 
@@ -372,7 +412,6 @@ onBeforeUnmount(() => {
   font-weight: 500;
 }
 
-
 :deep(.el-table th) {
   background-color: #f5f7fa;
   font-weight: 600;
@@ -391,6 +430,7 @@ onBeforeUnmount(() => {
 :deep(.el-table--striped .first-row td) {
 	background-color: #fef0f0 !important;
 }
+
 
 
 </style>
