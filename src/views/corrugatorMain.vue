@@ -349,6 +349,7 @@ const targetProgress = computed(() => setCount.value || 0)
 // 진행률에 따른 색상 설정
 const progressColor = computed(() => {
 	const percentage = progressPercentage.value
+	console.log('percentage : ', percentage)
 	if (percentage < 30) return '#f56c6c' // 빨간색 (30% 미만)
 	if (percentage < 70) return '#e6a23c' // 주황색 (30% ~ 70%)
 	return '#67c23a' // 초록색 (70% 이상)
