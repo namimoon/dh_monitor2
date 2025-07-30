@@ -213,7 +213,7 @@ import {
 	Setting,
 	Lightning,
 	Cpu,
-	TrendCharts
+	TrendCharts, Trophy
 } from '@element-plus/icons-vue'
 
 ChartJS.register(
@@ -223,7 +223,9 @@ ChartJS.register(
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler
+
 )
 
 
