@@ -126,7 +126,7 @@
 
 <script setup>
 import {onMounted, ref} from 'vue'
-import { Search, Histogram, List, Download, Refresh } from '@element-plus/icons-vue'
+import { Search, Histogram, List} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
 
 const inputData = ref('')
@@ -249,54 +249,58 @@ const recentData = ref([])
 
 let ws = null
 
-onMounted(() => {
-	ws = new WebSocket('ws://localhost:1880/ws/corrugatorusage')
+const connectWebSocket = () => {
+	if (ws.value) {
+		ws.value.close()
+	}
 
-	ws.onopen = () => {
+	ws.value = new WebSocket('ws://localhost:1880/ws/corrugatorusage')
+
+	ws.value.onopen = () => {
 		console.log('WebSocket 연결 성공')
 	}
 
-	ws.onmessage = (event) => {
+	ws.value.onmessage = (event) => {
 		try {
-			// 들어오는 데이터 로깅
-			// console.log('수신된 원본 데이터:', event.data)
-
-			// 데이터가 이미 객체인지 확인
 			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
-
-			// 파싱된 데이터 로깅
-			// console.log('파싱된 데이터:', data)
-			// 받은 데이터를 직접 recentData에 할당 (덮어쓰기)
 			recentData.value = data.map(item => ({
-				date: item.daytime,        // 시작시간
-				name: item.suze,           // 수주번호
-				width: item.width1,        // 자폭(mm)
-				length: item.targetlength, // 장(m)
-				square: item.square,       // 넓이(㎡)
-				address: item.AVG_SPEED,   // 평균속도
-				energy: item.TOTAL_ENERGY_SUM,      // 사용전력량(kwh)
-				air: item.TOTAL_corr_air_liter,     // 사용에어량(L)
-				gas: 0                     // 사용가스량(m³)
+				date: item.daytime,
+				name: item.suze,
+				width: item.width1,
+				length: item.targetlength,
+				square: item.square,
+				address: item.AVG_SPEED,
+				energy: item.TOTAL_ENERGY_SUM,
+				air: item.TOTAL_corr_air_liter,
+				gas: 0
 			}))
-
-
 		} catch (e) {
 			console.error('데이터 처리 중 오류 발생:', e)
 			console.error('문제가 된 데이터:', event.data)
 		}
 	}
 
-	ws.onerror = (err) => {
+	ws.value.onerror = (err) => {
 		console.error('WebSocket 오류:', err)
 	}
 
-	ws.onclose = () => {
+	ws.value.onclose = () => {
 		console.log('WebSocket 연결 종료')
-		// 재연결 로직 추가
 		setTimeout(() => {
 			console.log('WebSocket 재연결 시도...')
-			onMounted()
+			connectWebSocket()
 		}, 5000)
+	}
+}
+
+
+onMounted(() => {
+	connectWebSocket()
+})
+
+onBeforeUnmount(() => {
+	if (ws.value) {
+		ws.value.close()
 	}
 })
 
@@ -329,10 +333,6 @@ onMounted(() => {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-}
-.section-header .el-icon {
-	font-size: 24px;
-	color: #409EFF;
 }
 
 .page-container {
@@ -372,9 +372,6 @@ onMounted(() => {
   font-weight: 500;
 }
 
-:deep(.el-table) {
-  --el-table-header-bg-color: #f5f7fa;
-}
 
 :deep(.el-table th) {
   background-color: #f5f7fa;
@@ -384,17 +381,6 @@ onMounted(() => {
 
 :deep(.el-table--striped .el-table__row--striped td) {
   background: #fafafa;
-}
-
-.warning-row {
-  --el-table-tr-bg-color: var(--el-color-warning-light-9);
-}
-
-.success-row {
-  --el-table-tr-bg-color: var(--el-color-success-light-9);
-}
-:deep(.first-row) {
-	background-color: #fef0f0 !important;
 }
 
 :deep(.first-row td) {
@@ -407,12 +393,4 @@ onMounted(() => {
 }
 
 
-
-:deep(.el-progress-bar__outer) {
-  border-radius: 4px;
-}
-
-:deep(.el-tag) {
-  font-weight: 500;
-}
 </style>
