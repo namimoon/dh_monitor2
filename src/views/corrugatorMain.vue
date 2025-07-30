@@ -411,7 +411,7 @@ onMounted(() => {
 	ws.onmessage = (event) => {
 		try {
 			// 들어오는 데이터 로깅
-			console.log('수신된 원본 데이터:', event.data)
+			// console.log('수신된 원본 데이터:', event.data)
 
 			// 데이터가 이미 객체인지 확인
 			const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
