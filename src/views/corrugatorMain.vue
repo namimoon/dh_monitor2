@@ -326,23 +326,13 @@ const connectPowerWebSocket = () => {
 }
 
 const progressPercentage = computed(() => {
-	console.log('actCount:', actCount.value, typeof actCount.value);
-	console.log('setCount:', setCount.value, typeof setCount.value);
-
 	// setCount와 actCount가 있는 경우에만 계산
-	// if (setCount.value && actCount.value) {
-		// setCount와 actCount 값을 숫자로 형변환
-		const act = Number(actCount.value) || 0;
-		const set = Number(setCount.value) || 0;
-
-		// set이 0인 경우 나눗셈 오류 방지
-		if (set === 0) return 0;
-
+	if (setCount.value && actCount.value) {
 		// 백분율 계산 (소수점 1자리까지)
-		const percentage = (act / set) * 100;
+		const percentage = (actCount.value / setCount.value) * 100
 		return Math.min(Math.round(percentage * 10) / 10, 100) // 100%를 넘지 않도록 제한
-	// }
-	// return 0 // 기본값
+	}
+	return 0 // 기본값
 })
 
 // 진행률 컴포넌트에 표시될 현재값과 목표값도 computed로 설정
@@ -431,13 +421,13 @@ onMounted(() => {
 			maxSpeed.value = (data.maxspeed || '0').toLocaleString()
 			wpaWidth.value = (data.width1 || '0').toLocaleString()
 			targetLength.value = (data.targetlength || '0').toLocaleString()
-			setCount.value = (data.setcount || '0').toLocaleString()
+			setCount.value = data.setcount
 
 			actQulityMeter.value = (data.actqulitymeter || '0').toLocaleString()
 			speed.value = (data.speed || '0').toLocaleString()
 			width.value = (data.width || '0').toLocaleString()
 			actCutLength.value = (data.actcutlength || '0').toLocaleString()
-			actCount.value = (data.actcount || '0').toLocaleString()
+			actCount.value = data.actcount
 
 		} catch (e) {
 			console.error('데이터 처리 오류:', e)
