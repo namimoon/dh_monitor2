@@ -6,7 +6,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.11.0",
     "chart.js": "^4.5.0",
     "cors": "^2.8.5",
     "element-plus": "^2.10.4",
