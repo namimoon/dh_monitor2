@@ -30,9 +30,10 @@ import {
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler  // Filler 플러그인 추가
 } from 'chart.js'
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 
 ChartJS.register(
 	CategoryScale,
@@ -41,7 +42,8 @@ ChartJS.register(
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler
 )
 
 // 각 그래프별 데이터 저장소
@@ -56,12 +58,45 @@ const createChartData = () => ({
 	}]
 })
 
-const speedChartData = ref(createChartData())
-const energyChartData = ref(createChartData())
-const airChartData = ref(createChartData())
-const gasChartData = ref(createChartData())
+// 로컬 스토리지에서 데이터를 불러오는 함수
+const loadStoredData = (key, defaultValue) => {
+	const storedData = localStorage.getItem(key);
+	return storedData ? JSON.parse(storedData) : defaultValue;
+};
 
-const maxDataPoints = 50 // 최대 데이터 포인트 수
+
+// const speedChartData = ref(createChartData())
+// const energyChartData = ref(createChartData())
+// const airChartData = ref(createChartData())
+// const gasChartData = ref(createChartData())
+
+// 각 그래프별 데이터 저장소 초기화 (로컬 스토리지에서 불러오기)
+const speedChartData = ref(loadStoredData('speedChartData', createChartData()));
+const energyChartData = ref(loadStoredData('energyChartData', createChartData()));
+const airChartData = ref(loadStoredData('airChartData', createChartData()));
+const gasChartData = ref(loadStoredData('gasChartData', createChartData()));
+
+
+const maxDataPoints = 200 // 최대 데이터 포인트 수
+
+// watch를 사용하여 데이터 변경 시 로컬 스토리지에 저장
+watch(speedChartData, (newValue) => {
+	localStorage.setItem('speedChartData', JSON.stringify(newValue));
+}, { deep: true });
+
+watch(energyChartData, (newValue) => {
+	localStorage.setItem('energyChartData', JSON.stringify(newValue));
+}, { deep: true });
+
+watch(airChartData, (newValue) => {
+	localStorage.setItem('airChartData', JSON.stringify(newValue));
+}, { deep: true });
+
+watch(gasChartData, (newValue) => {
+	localStorage.setItem('gasChartData', JSON.stringify(newValue));
+}, { deep: true });
+
+
 
 // 각 그래프별 데이터 업데이트 함수
 const updateChartData = (chartData, newValue, timestamp) => {
