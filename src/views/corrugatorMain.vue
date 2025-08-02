@@ -204,16 +204,18 @@ import {
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler
 } from 'chart.js'
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {
 	Monitor,
 	Document,
 	Setting,
 	Lightning,
 	Cpu,
-	TrendCharts, Trophy
+	TrendCharts,
+	Trophy
 } from '@element-plus/icons-vue'
 
 ChartJS.register(
@@ -223,7 +225,8 @@ ChartJS.register(
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler
 )
 
 
@@ -247,8 +250,15 @@ const createChartData = () => ({
 	}]
 })
 
-const speedChartData = ref(createChartData())
-const maxDataPoints = 20 // 최대 데이터 포인트 수
+// 로컬 스토리지에서 데이터를 불러오는 함수
+const loadStoredData = (key, defaultValue) => {
+	const storedData = localStorage.getItem(key);
+	return storedData ? JSON.parse(storedData) : defaultValue;
+};
+
+// const speedChartData = ref(createChartData())
+const speedChartData = ref(loadStoredData('speedChartData', createChartData()));
+const maxDataPoints = 200 // 최대 데이터 포인트 수
 
 
 const orderNumber = ref('');
@@ -279,6 +289,11 @@ const gas1V = ref('');
 const gas1Pressure = ref('');
 const gas1T = ref('');
 const gas1VS = ref('');
+
+// watch를 사용하여 데이터 변경 시 로컬 스토리지에 저장
+watch(speedChartData, (newValue) => {
+	localStorage.setItem('speedChartData', JSON.stringify(newValue));
+}, { deep: true });
 
 // power WebSocket 연결 함수 추가
 const connectPowerWebSocket = () => {
