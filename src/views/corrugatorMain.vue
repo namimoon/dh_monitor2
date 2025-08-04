@@ -515,167 +515,198 @@ const chartOptions = {
 }
 </script>
 
+
+
 <style scoped>
+/* 기본 컨테이너 스타일 */
 .main-container {
 	background-color: #f5f7fa;
 	min-height: 100vh;
 	padding: 24px;
+	max-width: 1600px;
+	margin: 0 auto;
 }
 
+/* 헤더 섹션 */
 .header-section {
 	margin-bottom: 24px;
+	background: #1a237e;
+	padding: 20px;
+	border-radius: 12px;
 }
 
 .page-title {
 	font-size: 28px;
 	font-weight: 600;
-	color: #303133;
+	color: white;
 	display: flex;
 	align-items: center;
 	gap: 12px;
 }
 
+/* 수주번호와 진행률을 포함하는 컨테이너 */
 .info-container {
 	display: flex;
 	gap: 24px;
 	margin-bottom: 24px;
-	align-items: stretch; /* 컨테이너 내의 요소들을 같은 높이로 맞춤 */
 }
 
+/* 수주번호 섹션 */
 .order-section {
-	flex: 0 0 200px; /* 수주번호 섹션의 고정 너비 */
-	display: flex;
-	flex-direction: column;
+	flex: 0 0 300px;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
-.progress-section {
-	flex: 1; /* 진행률 섹션이 남은 공간을 모두 차지 */
+
+.order-card {
+	padding: 20px;
+	height: calc(100% - 60px);
 	display: flex;
-	flex-direction: column;
+	align-items: center;
+}
+
+.order-number-card {
+	width: 100%;
+	background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+	padding: 24px;
+	border-radius: 8px;
+	text-align: center;
+}
+
+.order-label {
+	font-size: 16px;
+	color: rgba(255, 255, 255, 0.9);
+	margin-bottom: 12px;
+}
+
+.order-number {
+	font-size: 28px;
+	font-weight: 700;
+	color: white;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 진행률 섹션 */
+.progress-section {
+	flex: 1;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .progress-container {
-	padding: 12px; /* 패딩 감소 */
-	flex: 1;
+	padding: 24px;
 	display: flex;
-	align-items: center; /* 수직 중앙 정렬 */
+	align-items: center;
+	height: calc(100% - 60px);
 }
 
 .progress-item {
 	width: 100%;
 }
 
+.progress-label {
+	font-size: 18px;
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 12px;
+}
+
 .main-progress {
-	margin: 8px 0;
+	margin: 16px 0;
+	height: 32px !important;
 }
 
 .progress-details {
-	text-align: right;
-	font-size: 14px;
-	color: #606266;
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	font-size: 20px;
+	font-weight: 600;
 }
 
-
-.info-section {
-	background: white;
-	border-radius: 12px;
-	margin-bottom: 24px;
-	box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-	overflow: hidden;
+.target-value, .current-value {
+	padding: 8px 16px;
+	border-radius: 6px;
+	background: #e3f2fd;
+	color: #1976d2;
 }
 
+/* 섹션 헤더 공통 스타일 */
 .section-header {
-	padding: 20px 24px;
-	background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
-	border-bottom: 1px solid #ebeef5;
+	padding: 16px 24px;
+	background: #1a237e;
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
 }
 
 .section-header h3 {
 	margin: 0;
 	font-size: 18px;
 	font-weight: 600;
-	color: #303133;
+	color: white;
 	display: flex;
 	align-items: center;
 	gap: 8px;
 }
 
-.order-card {
-	padding: 12px; /* 패딩 감소 */
-	flex: 1;
-	display: flex;
-	align-items: center; /* 수직 중앙 정렬 */
-}
-
-.order-number-card {
-	background: linear-gradient(135deg, #409EFF 0%, #66b3ff 100%);
-	border: none;
-}
-
-.order-label {
-	font-size: 12px;
-	color: rgba(255, 255, 255, 0.8);
-	margin-bottom: 4px;
-}
-
-.order-number {
-	font-size: 18px;
-	font-weight: 700;
-	color: white;
-	font-family: 'Monaco', 'Menlo', monospace;
-}
-
-.custom-descriptions {
-	margin: 24px;
-	border-radius: 8px;
-	overflow: hidden;
-}
-
-.metric-value {
-	font-family: 'Monaco', 'Menlo', monospace;
-	color: #409EFF;
-	font-weight: 600;
-	font-size: 16px;
-}
-
-.energy-value {
-	font-family: 'Monaco', 'Menlo', monospace;
-	color: #67C23A;
-	font-weight: 600;
-	font-size: 16px;
-}
-
-.energy-value.total {
-	color: #E6A23C;
-	font-size: 18px;
-	font-weight: 700;
-}
-
-.air-value {
-	font-family: 'Monaco', 'Menlo', monospace;
-	color: #909399;
-	font-weight: 600;
-	font-size: 16px;
-}
-
-.gas-value {
-	font-family: 'Monaco', 'Menlo', monospace;
-	color: #F56C6C;
-	font-weight: 600;
-	font-size: 16px;
-}
-
-.sensor-value {
-	font-family: 'Monaco', 'Menlo', monospace;
-	color: #909399;
-	font-weight: 500;
-	font-size: 14px;
-}
-
-.chart-section {
+/* 데이터 표시 섹션 */
+.info-section {
 	background: white;
 	border-radius: 12px;
 	margin-bottom: 24px;
-	box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.custom-descriptions {
+	padding: 20px;
+}
+
+/* 데이터 값 스타일 */
+.metric-value, .energy-value, .air-value, .gas-value, .sensor-value {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	font-weight: 600;
+	padding: 12px;
+	border-radius: 8px;
+	margin-top: 8px;
+	font-family: 'Roboto Mono', monospace;
+}
+
+.metric-value {
+	background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+	color: #1976d2;
+}
+
+.energy-value {
+	background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+	color: #558b2f;
+}
+
+.energy-value.total {
+	background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+	color: #f57c00;
+	font-size: 28px;
+}
+
+.air-value {
+	background: linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%);
+	color: #455a64;
+}
+
+.gas-value {
+	background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+	color: #c62828;
+}
+
+/* 차트 섹션 */
+.chart-section {
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 	overflow: hidden;
 }
 
@@ -684,30 +715,37 @@ const chartOptions = {
 	height: 400px;
 }
 
-
-@keyframes rotate {
-	from {
-		transform: rotate(0deg);
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+	.info-container {
+		flex-direction: column;
 	}
-	to {
-		transform: rotate(360deg);
+
+	.order-section {
+		flex: none;
+		width: 100%;
+	}
+
+	.progress-section {
+		width: 100%;
 	}
 }
 
-/* 반응형 디자인 */
 @media (max-width: 768px) {
 	.main-container {
 		padding: 16px;
 	}
-	
+
+	.metric-value, .energy-value, .air-value, .gas-value {
+		font-size: 20px;
+	}
+
+	.energy-value.total {
+		font-size: 24px;
+	}
+
 	.page-title {
 		font-size: 24px;
 	}
-	
-	:deep(.custom-descriptions) {
-		margin: 16px;
-	}
-
 }
-
 </style>
