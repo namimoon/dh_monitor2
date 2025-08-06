@@ -530,7 +530,7 @@ const chartOptions = {
 /* 헤더 섹션 */
 .header-section {
 	margin-bottom: 24px;
-	background: #1a237e;
+	background: #666ec1;
 	padding: 20px;
 	border-radius: 12px;
 }
@@ -568,7 +568,7 @@ const chartOptions = {
 
 .order-number-card {
 	width: 100%;
-	background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+	background: linear-gradient(135deg, #666ec1 0%, #3949ab 100%);
 	padding: 24px;
 	border-radius: 8px;
 	text-align: center;
@@ -636,7 +636,7 @@ const chartOptions = {
 /* 섹션 헤더 공통 스타일 */
 .section-header {
 	padding: 16px 24px;
-	background: #1a237e;
+	background: #666ec1;
 	border-top-left-radius: 12px;
 	border-top-right-radius: 12px;
 }
