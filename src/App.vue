@@ -30,7 +30,8 @@ const routes = [
 	{ path: '/page3', name: '설정3' },
 	{ path: '/page4', name: '설정4' },
 	{ path: '/page5', name: '설정5' },
-	{ path: '/page6', name: '설정6' }
+	{ path: '/page6', name: '설정6' },
+	{ path: '/test', name: 'test' }
 ]
 </script>
 

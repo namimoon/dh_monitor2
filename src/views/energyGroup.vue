@@ -126,43 +126,6 @@ const updateChartData = (chartData, newValue, timestamp) => {
 }
 
 
-
-const chartData1 = {
-	labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월'],
-	datasets: [{
-		label: '데이터 1',
-		backgroundColor: 'rgba(255, 99, 132, 0.2)',
-		borderColor: 'rgb(255, 99, 132)',
-		data: [40, 39, 10, 40, 39, 80, 40],
-		fill: true,
-		tension: 0.4
-	}]
-}
-
-const chartData2 = {
-	labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월'],
-	datasets: [{
-		label: '데이터 2',
-		backgroundColor: 'rgba(54, 162, 235, 0.2)',
-		borderColor: 'rgb(54, 162, 235)',
-		data: [60, 55, 32, 70, 45, 65, 55],
-		fill: true,
-		tension: 0.4
-	}]
-}
-
-const chartData3 = {
-	labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월'],
-	datasets: [{
-		label: '데이터 3',
-		backgroundColor: 'rgba(75, 192, 192, 0.2)',
-		borderColor: 'rgb(75, 192, 192)',
-		data: [20, 45, 65, 35, 50, 45, 60],
-		fill: true,
-		tension: 0.4
-	}]
-}
-
 let ws_energy = null
 let ws_speed = null  // 새로운 WebSocket 변수
 
